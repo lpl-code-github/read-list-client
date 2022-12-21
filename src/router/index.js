@@ -28,6 +28,9 @@ const routes = [
     },
     {
         path: '/collection', component: () => import('@/views/Collection')
+    },
+    {
+        path: '/book', component: () => import('@/views/Book')
     }
     /**
      * children 写法
