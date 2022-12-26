@@ -67,8 +67,10 @@ export default {
         for (const index in this.tabsList) {
           if (this.tabsList[index].to ===path) {
             this.tabsIndex= this.tabsList[index].num
+            return
           }
         }
+        this.tabsIndex =-1
       },
       // 深度观察监听
       deep: true
