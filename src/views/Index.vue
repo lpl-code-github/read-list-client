@@ -66,6 +66,7 @@ export default {
       setTimeout(() => {
         //需要定时执行的代码
         this.loading =  !this.loading
+        this.$router.push("/book")
       }, 2000)
     }
   }
@@ -74,7 +75,7 @@ export default {
 
 <style  scoped>
 /*
-	A. Mini Reset 
+	A. Mini Reset
 */
 *,
 *:after,
