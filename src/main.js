@@ -14,7 +14,7 @@ import {
     removeSessionStorage,
     setLocalStorage,
     getLocalStorage,
-    removeLocalStorage,
+    removeLocalStorage, disposeTime, dateFormat,parseTime
 } from './utils/common'
 
 // 引入封装好的axios请求
@@ -40,6 +40,9 @@ Vue.prototype.$removeSessionStorage = removeSessionStorage
 Vue.prototype.$setLocalStorage = setLocalStorage
 Vue.prototype.$getLocalStorage = getLocalStorage
 Vue.prototype.$removeLocalStorage = removeLocalStorage
+Vue.prototype.$disposeTime= disposeTime
+Vue.prototype.$dateFormat = dateFormat
+Vue.prototype.$parseTime = parseTime
 
 Vue.use(ElementUI)
 Vue.use(SuiVue)
