@@ -4,12 +4,12 @@
     <div class="component"  >
       <ul class="align">
         <!-- Book 1 -->
-        <li v-for="item in 10" :key="item">
+        <li v-for="(item,index) in bookList" :key="index">
           <figure class='book'>
             <!-- Front -->
             <ul class='hardcover_front'>
               <li>
-                <img src="https://s.cdpn.io/13060/book1.jpg" alt="" width="100%" height="100%">
+                <img :src="item.imgPath" alt="" width="100%" height="100%">
                 <span class="ribbon bestseller">New</span>
               </li>
               <li></li>
@@ -34,8 +34,10 @@
               <li></li>
             </ul>
             <figcaption>
-              <h1>Responsive Web Design</h1>
-              <span>By Ethan Marcotte</span>
+              <h1>{{item.bookTitle}}</h1>
+              <span>作者：{{item.bookAuthor}}</span>
+              <span>页数：{{item.pageNum}}</span>
+              <span>发行日期：{{item.pubDate}}</span>
               <p>From mobile browsers to netbooks and tablets, users are visiting your sites from an increasing array of
                 devices and browsers. Are your designs ready?...</p>
             </figcaption>
@@ -43,30 +45,73 @@
         </li>
       </ul>
     </div>
+
+
+    <el-pagination
+        style="padding-bottom: 20px!important;"
+        v-if="total!==0"
+        :page-size="size"
+        :pager-count="5"
+        background
+        @current-change="handleCurrentChange"
+        layout="prev, pager, next"
+        :total="total">
+    </el-pagination>
   </div>
+
+
 </template>
 
 <script>
-
-
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "index",
   data(){
     return{
-      loading:false
+      loading:false,
+      bookList:[],
+      total:0,
+      current:1,
+      size:10,
+      searchContent:""
     }
   },
   components: {
 
   },
+
+  created() {
+    this.findBookList(1)
+  },
   methods: {
-    toRead(){
+    findBookList(page){
+      this.$request.findBookList("?page="+page).then(value=>{
+        if (value.code===200){
+          var data = value.data.data
+          data.forEach(book => {
+            book.pubDate = this.$parseTime(book.pubDate)
+          })
+          this.bookList = data
+          this.size = value.data.size
+          this.current = value.data.current
+          this.total = value.data.total
+        }
+      })
+    },
+    handleCurrentChange(val){
+      this.findBookList(val)
+    },
+    toRead(item){
       this.loading =  !this.loading
       setTimeout(() => {
         //需要定时执行的代码
         this.loading =  !this.loading
-        this.$router.push("/book")
+        this.$router.push({
+          path:"/book",
+          query:{
+            "bookId":item.id
+          }
+        })
       }, 2000)
     }
   }
@@ -765,17 +810,18 @@ figcaption {
 }
 
 figcaption h1 {
-  margin: 0;
+
 }
 
 figcaption span {
   color: #16a085;
-  padding: 0.6em 0 1em 0;
+  padding: 0.2em 0 0.5em 0;
   display: block;
 }
 
 figcaption p {
   color: #63707d;
+  /*margin-top: 0.5rem;*/
   line-height: 1.3;
 }
 
