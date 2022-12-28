@@ -14,13 +14,28 @@
 
       <div class="para">
         <!--文本内容-->
-        <p>{{ content }}</p>
+        <!--        <div  v-for="item in 196" :key="item" style="width: 30px;height: 30px;border: 1px black solid;display: inline-flex">{{item}}</div>-->
+        <div v-for="(item,index) in content" :key="index" style="width: 30px;height: 30px;display: inline-flex;
+    position: relative;">
+          <p>{{ item }}</p>
+        </div>
+        <!--        <p>{{ content }}</p>-->
       </div>
-      <div class="ui mini buttons" style="position: absolute;bottom: 10px;right: 30px">
+
+      <div class="ui indicating progress"
+           style="position: absolute;bottom: 0;right: 205px;width: 230px;margin-bottom: 12px" id="example1"
+           :data-value="page" :data-total="totalPage">
+        <div class="bar">
+          <div class="progress"></div>
+        </div>
+      </div>
+
+      <div class="ui mini buttons" style="position: absolute;bottom: 10px;right: 20px;">
         <button class="ui  button" :disabled="page===1" @click="previous"><font
             style="vertical-align: inherit;"><font style="vertical-align: inherit;">上一页</font></font></button>
         <div class="or"></div>
-        <button class="ui teal button" @click="next"><font style="vertical-align: inherit;"><font
+        <button class="ui teal button" :disabled="page===totalPage" @click="next"><font
+            style="vertical-align: inherit;"><font
             style="vertical-align: inherit;">下一页</font></font></button>
       </div>
     </div>
@@ -28,6 +43,8 @@
 </template>
 
 <script>
+import $ from 'jquery'
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Book",
@@ -36,11 +53,27 @@ export default {
       page: 1,
       content: "",
       chapterId: 1,
-      chapterInfo: []
+      totalPage: 1,
+      chapterInfo: [],
+      progress: 0
     }
   },
   created() {
     this.getChapterContent(1)
+  },
+  watch: {
+    page: {
+      handler(newVal) {
+        // 当页码发生变化时，设置进度条的百分比
+        console.log(newVal)
+        $('#example1').progress({
+          percent: (this.page/this.totalPage)*100
+        });
+      }
+    }
+  },
+  mounted() {
+
   },
   methods: {
     getChapterContent(page) {
@@ -52,19 +85,27 @@ export default {
             this.chapterInfo = value.data.chapterInfo
             this.content = value.data.content
             this.page = value.data.page
+            this.totalPage = value.data.totalPage
           } else {
             this.$message.warning(value.data.content)
           }
         } else {
           this.$message.warning(value.status)
+
         }
       })
     },
     next() {
+      if (this.page + 1 > this.totalPage) {
+        return
+      }
       this.getChapterContent(this.page + 1)
     },
 
     previous() {
+      if (this.page - 1 < 1) {
+        return
+      }
       this.getChapterContent(this.page - 1)
     },
     toChapter(item) {
@@ -140,7 +181,7 @@ export default {
   top: 10%;
   left: 52%;
   text-align: left;
-  font-family: 'Playfair Display', serif;
+  /*font-family: 'Playfair Display', serif;*/
   font-size: 20px;
 }
 
