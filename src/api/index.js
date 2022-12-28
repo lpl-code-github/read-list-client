@@ -1,6 +1,7 @@
 // 引入axios
 import axios from 'axios'
 // 引入element的Message提示组件
+import router from '../router/index'
 import {
     Message
 } from 'element-ui'
@@ -73,7 +74,21 @@ service.interceptors.response.use(
         return response
     },
     error => {
-        // const { data } = error.response
+        const { data } = error.response
+        if (data.code ===404){
+            Message.warning({
+                    message: data.status
+                })
+            setTimeout(() => {
+                //需要定时执行的代码
+                router.go(-1)
+            }, 2000)
+        }else {
+            Message.warning({
+                message: data.status
+            })
+        }
+
         // 关闭顶部loading
         NProgress.done()
         // 请求超时
