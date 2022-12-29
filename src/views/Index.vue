@@ -38,8 +38,7 @@
               <span>作者：{{item.bookAuthor}}</span>
               <span>页数：{{item.pageNum}}</span>
               <span>发行日期：{{item.pubDate}}</span>
-              <p>From mobile browsers to netbooks and tablets, users are visiting your sites from an increasing array of
-                devices and browsers. Are your designs ready?...</p>
+              <p>{{item.bookDesc}}</p>
             </figcaption>
           </figure>
         </li>
